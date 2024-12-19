@@ -9,6 +9,39 @@ Experiment to create chatbot to explain and help with table games.
 python3 -m venv --prompt venv .venv
 source .venv/bin/activate
 pip install -e .[dev]
+gitlint install-hook
+```
+
+To automatically sign-off your commits, you can create the following command under `~/.git/hooks/prepare-commit-msg`:
+
+```shell
+#!/bin/sh
+
+# https://stackoverflow.com/questions/15015894/git-add-signed-off-by-line-using-format-signoff-not-working/46536244#46536244
+
+NAME=$(git config user.name)
+EMAIL=$(git config user.email)
+
+if [ -z "$NAME" ]; then
+    echo "empty git config user.name"
+    exit 1
+fi
+
+if [ -z "$EMAIL" ]; then
+    echo "empty git config user.email"
+    exit 1
+fi
+
+# add signed-off-by to git commit msg
+git interpret-trailers --if-exists doNothing --trailer \
+    "Signed-off-by: $NAME <$EMAIL>" \
+    --in-place "$1"
+```
+
+Don't forget to make the file executable:
+
+```shell
+chmod +x ~/.git/hooks/prepare-commit-msg
 ```
 
 
@@ -27,6 +60,8 @@ pip install -e .[dev]
 - `pytest` - Testing framework - https://docs.pytest.org/en/stable/
 - `ruff` - Linter - https://docs.astral.sh/ruff/
 - `sphinx` - Documentation - https://www.sphinx-doc.org/en/master/
+- `gitlint` - Linter git commits with conventional commits  - https://jorisroovers.com/gitlint/latest/rules/contrib_rules/#ct1-contrib-title-conventional-commits
+
 
 
 ## Sources

@@ -1,0 +1,8 @@
+# https://jorisroovers.com/gitlint/latest/rules/contrib_rules/#ct1-contrib-title-conventional-commits
+
+[general]
+contrib = contrib-title-conventional-commits,CC1
+
+# Setting contrib rule options is identical to configuring other rules
+[contrib-title-conventional-commits]
+types = fix,feat,chore,docs,style,refactor,perf,test,revert,ci,build

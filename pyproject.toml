@@ -13,6 +13,7 @@ dependencies = []
 
 [project.optional-dependencies]
 dev = [
+    "gitlint",
     "tox",
     "table-game-chat[lint]",
     "table-game-chat[test]",
