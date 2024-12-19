@@ -4,8 +4,99 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "table-game-chat"
+authors = [
+    {name = "Maurice Busch", email = "gherrink@gmai.com"},
+]
 requires-python = ">=3.12"
 dynamic = ["version"]
 dependencies = []
 
+[project.optional-dependencies]
+dev = [
+    "tox",
+    "table-game-chat[lint]",
+    "table-game-chat[test]",
+    "table-game-chat[doc]",
+    "table-game-chat[build]",
+]
+lint = [
+    "mypy",
+    "ruff",
+]
+test = [
+    "pytest==8.3.4",
+    "pytest-cov==6.0.0",
+    "coverage[toml]==7.6.9",
+]
+doc = [
+    "sphinx",
+]
+build = [
+    "build[virtualenv]==1.2.2",
+]
+
 [tool.setuptools_scm]
+
+[tool.ruff]
+line-length = 120
+src = ["src"]
+extend-exclude = [
+    "conf.py",
+]
+target-version = "py312"
+lint.select = ["ALL"]
+lint.ignore = [
+    "COM812", # Conflicts with the formatter
+    "ISC001", # Conflicts with the formatter
+    "PT001", # https://github.com/astral-sh/ruff/issues/8796#issuecomment-1825907715
+    "PT023", # https://github.com/astral-sh/ruff/issues/8796#issuecomment-1825907715
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = [
+    "S101", # Use of `assert` detected
+    "D103", # Missing docstring in public function
+]
+"**/__init__.py" = [
+    "F401", # Imported but unused
+    "F403", # Wildcard imports
+]
+"docs/**" = [
+    "INP001", # Requires __init__.py but docs folder is not a package.
+]
+
+[tool.ruff.lint.pyupgrade]
+# Preserve types, even if a file imports `from __future__ import annotations`(https://github.com/astral-sh/ruff/issues/5434)
+keep-runtime-typing = true
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.mypy]
+disallow_untyped_defs = true # Functions need to be annotated
+warn_unused_ignores = true
+exclude = [
+    "table-game-chat-\\d+", # Ignore temporary folder created by setuptools when building an sdist
+    ".venv.*/",
+    "venv.*/",
+    "build/",
+    "dist/",
+]
+
+[tool.pytest.ini_options]
+addopts = """
+    --import-mode=append
+    --cov=src/
+    --cov-config=pyproject.toml
+    --cov-report=
+    """
+
+[tool.coverage.paths]
+# Maps coverage measured in site-packages to source files in src
+source = ["src/", ".tox/*/lib/python*/site-packages/"]
+
+[tool.coverage.html]
+directory = "reports/coverage_html"
+
+[tool.coverage.xml]
+output = "reports/coverage.xml"
